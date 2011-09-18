@@ -3,7 +3,7 @@ import os.path
 import codecs
 from settings import *
 
-class SimpleDoc():
+class SimpleDoc(object):
     def __init__(self, info):
         self.meta_info = info
 
