@@ -30,7 +30,7 @@ class SimpleDoc():
             self.en_title = Regex_title.search(s).group(1).strip() if Regex_title.search(s) is not None else None
             
             if self.is_translated:
-                doc_ja_file = codecs.open(CONFIG['BASE_PAHT'] + self.meta_info['file_ja_path'], 'r', 'utf-8')
+                doc_ja_file = codecs.open(CONFIG['BASE_PATH'] + self.meta_info['file_ja_path'], 'r', 'utf-8')
                 s = doc_ja_file.read()
                 doc_ja_file.close()
 
