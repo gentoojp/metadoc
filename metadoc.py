@@ -1,16 +1,5 @@
 from xml.etree.ElementTree import ElementTree
-
-CONFIG = {}
-
-#CONFIG['metadoc_en'] = "doc/en/metadoc.xml"
-#CONFIG['metadoc_ja'] = "doc/ja/metadoc.xml"
-
-CONFIG['metadoc_en'] = "metadoc.en.xml"
-CONFIG['metadoc_ja'] = "metadoc.ja.xml"
-
-CONFIG['BASE_PATH'] = "./"
-CONFIG['HANDBOOK_DIR'] = ('handbook', 'security')
-
+from settings import *
         
 class MetaDoc():
     def __init__(self):

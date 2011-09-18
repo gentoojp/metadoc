@@ -1,18 +1,7 @@
 import re
 import os.path
 import codecs
-
-CONFIG = {}
-
-CONFIG['metadoc_en'] = "doc/en/metadoc.xml"
-CONFIG['metadoc_ja'] = "doc/ja/metadoc.xml"
-
-#CONFIG['metadoc_en'] = "metadoc.en.xml"
-#CONFIG['metadoc_ja'] = "metadoc.ja.xml"
-
-CONFIG['BASE_PATH'] =  "/Users/naoaki/Gentoo/GentooCVS/gentoo/xml/htdocs"
-CONFIG['HANDBOOK_DIR'] = ('handbook', 'security')
-
+from settings import *
 
 class SimpleDoc():
     def __init__(self, info):
