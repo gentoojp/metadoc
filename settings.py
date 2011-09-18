@@ -2,9 +2,11 @@
 
 CONFIG = {}
 
-CONFIG['metadoc_en'] = "doc/en/metadoc.xml"
-CONFIG['metadoc_ja'] = "doc/ja/metadoc.xml"
+CONFIG['metadoc_en'] = "/doc/en/metadoc.xml"
+CONFIG['metadoc_ja'] = "/doc/ja/metadoc.xml"
 
-CONFIG['BASE_PATH'] =  "/Users/naoaki/Gentoo/GentooCVS/gentoo/xml/htdocs"
+CONFIG['BASE_PATH'] =  "/usr/local/jpdoc/cvs/gentoo"
 CONFIG['HANDBOOK_DIR'] = ('handbook', 'security')
+
+CONFIG['NON_LIST_FILE'] = ('metadoc','metadoc-index', 'metadoc-list', 'metadoc-overview', 'doc-languages', 'inserts')
 

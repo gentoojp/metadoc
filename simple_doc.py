@@ -7,8 +7,12 @@ class SimpleDoc(object):
     def __init__(self, info):
         self.meta_info = info
 
-        if (os.path.exists(CONFIG['BASE_PATH'] + self.meta_info['file_ja_path'])) and (self.meta_info['file_en_path'] != self.meta_info['file_ja_path']):
+        if os.path.exists(CONFIG['BASE_PATH'] + self.meta_info['file_en_path']):
+            self.meta_info_error = False
+        else:
+            self.meta_info_error = True
 
+        if (os.path.exists(CONFIG['BASE_PATH'] + self.meta_info['file_ja_path'])) and (self.meta_info['file_en_path'] != self.meta_info['file_ja_path']):
             self.is_translated = True
         else:
             self.is_translated = False
@@ -40,5 +44,5 @@ class SimpleDoc(object):
                 self.ja_cvs_rev =  Regex_cvs_rev.search(s).group(1).strip() if Regex_cvs_rev.search(s) is not None else None
                 self.ja_title = Regex_title.search(s).group(1).strip() if Regex_title.search(s) is not None else None
                 self.ja_org_rev = Regex_org_rev.search(s).group(1).strip() if Regex_org_rev.search(s) is not None else None
-        except:
-            self.ERROR = False
+        except Exception, errormsg:
+            self.ERROR = errormsg
