@@ -50,9 +50,9 @@ class SimpleDoc(object):
                 self.ja_title = Regex_title.search(s).group(1).strip() if Regex_title.search(s) is not None else None
                 self.ja_org_rev = Regex_org_rev.search(s).group(1).strip() if Regex_org_rev.search(s) is not None else None
 
-                Regex_translator_block = re.compile(r"""(<author title=\"翻訳\">.*</author>)""", re.DOTALL)
+                Regex_translator_block = re.compile(u"(<author title=\"翻訳\">.*</author>)", re.DOTALL)
                 tb = Regex_translator_block.search(s).group(1)
-                Regex_traslator_name =  re.compile(r'\">(.*?)</mail>', re.MULTILINE)
+                Regex_translator_name =  re.compile(r'\">(.*?)</mail>', re.MULTILINE)
                 tn_list = Regex_translator_name.findall(tb)
                 self.translator = ','.join(tn_list)
                 
