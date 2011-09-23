@@ -52,7 +52,7 @@ class SimpleDoc(object):
 
                 Regex_translator_block = re.compile(u"(<author title=\"翻訳\">.*</author>)", re.DOTALL)
                 tb = Regex_translator_block.search(s).group(1)
-                Regex_translator_name =  re.compile(r'\">(.*?)</mail>', re.MULTILINE)
+                Regex_translator_name =  re.compile(r'<mail link=\".*\">(.*?)</mail>', re.MULTILINE)
                 tn_list = Regex_translator_name.findall(tb)
                 self.translator = ','.join(tn_list)
                 
