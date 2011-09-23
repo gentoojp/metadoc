@@ -100,4 +100,8 @@ class TransStatus(object):
 
             yield template.substitute(attrs)
 
+if __name__ == "__main__":
+    t = TransStatus()
+    t.dump()
+
 # vim: set ts=4 sw=4 tw=0 :
