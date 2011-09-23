@@ -55,14 +55,12 @@ class TransStatus(object):
     def dump(self):
         chapters = []
         for category in sorted(self.categories.items()):
-            #print "----"
-            #print category[0]
             records = []
             for record in self.record(category[0]):
-                 records.append(record)
-            
-            chapters.append(self.chapter_template.substitute(chapter = category[1]['title'], records = u"".join(records)))
+                records.append(record)
 
+            if len(records) > 0:
+                chapters.append(self.chapter_template.substitute(chapter = category[1]['title'], records = u"".join(records)))
         
         d = u"%s" % date.today().strftime('%d %b %Y')
         print self.base_template.substitute(date = d, chapters = u"".join(chapters)).encode('utf-8')
