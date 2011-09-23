@@ -36,15 +36,15 @@ def docdiff_url(doc):
     docdiff_command = '/usr/bin/docdiff --utf8 --html %s %s' % (old_file[1], new_file[1])
     diff_html = commands.getoutput(docdiff_command)
 
+    diff_html_path = CONFIG['DIFF_DIR'] + '/' + doc.meta_info['file_id'] + '.' + doc.ja_org_rev + '_' + doc.en_cvs_rev + '.html'
     try:
-        html = open(CONFIG['DIFF_DIR'] + '/' + doc.meta_info['file_id'] + '.' + doc.ja_org_rev + '_' + doc.en_cvs_rev + '.html', 'w')
+        html = open(diff_html_path, 'w')
         html.write(diff_html)
         html.close()
     except:
         pass
-        
 
-
+    return dff_html_path
 
     os.remove(old_file[1])
     os.remove(new_file[1])
