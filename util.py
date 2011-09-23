@@ -44,7 +44,7 @@ def docdiff_url(doc):
     except:
         pass
 
-    return dff_html_path
+    return diff_html_path
 
     os.remove(old_file[1])
     os.remove(new_file[1])
