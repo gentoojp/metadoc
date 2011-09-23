@@ -1,0 +1,20 @@
+  <chapter>
+    <title>${chapter}</title>
+    <section>
+      <body>
+        <table>
+          <tr>
+            <th>ドキュメント</th>
+            <th>訳</th>
+            <th>最新<br/>rev</th>
+            <th>完了<br/>rev</th>
+            <th>状態</th>
+            <th>翻訳者</th>
+            <th>メモ</th>
+          </tr>
+          ${records}
+        </table>
+      </body>
+    </section>
+  </chapter>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href='/xsl/guide.xsl' type='text/xsl'?>
+<!-- このドキュメントは自動更新しているため、手動で更新をしても上書きされてしまいます。 -->
+<guide link="/jpmain/trans_status.xml">
+  <title>GentooJP翻訳プロジェクト</title>
+  <author title="Author">
+    <mail link="www@gentoo.gr.jp">GentooJP</mail>
+  </author>
+  <abstract>このドキュメントはGentooJP翻訳プロジェクトの現在の状況を記述したものです。</abstract>
+  <version>1.0</version>
+  <date>${date}</date>
+  ${chapters}
+</guide>

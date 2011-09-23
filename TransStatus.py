@@ -31,6 +31,14 @@ class TransStatus(object):
             except:
                 pass
 
+        hb_all = [Handbook(info) for info in md.get_meta_info(scope = 'handbook')]
+        for hb in hb_all:
+            try:
+                for category in hb.meta_info['en_memberof'].keys():
+                    self.add_doc(category, hb)
+            except:
+                pass
+
     def add_doc(self, category_id, doc):
         self.categories[category_id]['member'].append(doc)
 
@@ -75,16 +83,21 @@ class TransStatus(object):
                 if doc_diff_url == None:
                     doc_diff_url = ""
 
+                try:
+                    translator = doc.translator
+                except:
+                    translator = ""
                 attrs.update({
                     'ja_url': escape(doc_url(doc, lang='ja')),
                     'ja_cvs': escape(doc_url(doc, lang='ja', cvs=True)),
                     'ja_cvs_rev': doc.ja_cvs_rev,
                     'diff_url': escape(doc_url(doc, diff=True)),
                     'doc_diff_url': escape(doc_diff_url),
-                    'translater': u"" #FIXME
+                    'translator': escape(translator)
                     })
             else:
                 template = Template(open(CONFIG['RECORD_NOT_TRANSLATE_TEMPLATE'], 'r').read().decode('utf-8'))
 
             yield template.substitute(attrs)
 
+# vim: set ts=4 sw=4 tw=0 :

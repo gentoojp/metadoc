@@ -1,0 +1,16 @@
+          <tr>
+            <ti>
+              <uri link="${en_url}">${en_title}</uri>
+              <uri link="${en_cvs}">(CVS)</uri>
+            </ti>
+            <ti>
+              <uri link="${ja_url}">訳</uri>
+              <uri link="${ja_cvs}">(CVS)</uri>
+            </ti>
+            <ti>${en_cvs_rev}</ti>
+            <ti>${ja_cvs_rev}</ti>
+            <ti>最新状態</ti>
+            <ti>${translator}</ti>
+            <ti/>
+          </tr>
+
