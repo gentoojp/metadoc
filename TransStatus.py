@@ -32,6 +32,7 @@ class TransStatus(object):
                 pass
 
         hb_all = [Handbook(info) for info in md.get_meta_info(scope = 'handbook')]
+        
         for hb in hb_all:
             try:
                 for category in hb.meta_info['en_memberof'].keys():
@@ -53,13 +54,15 @@ class TransStatus(object):
 
     def dump(self):
         chapters = []
-        for category in self.categories.items():
+        for category in sorted(self.categories.items()):
             #print "----"
             #print category[0]
             records = []
             for record in self.record(category[0]):
                  records.append(record)
+            
             chapters.append(self.chapter_template.substitute(chapter = category[1]['title'], records = u"".join(records)))
+
         
         d = u"%s" % date.today().strftime('%d %b %Y')
         print self.base_template.substitute(date = d, chapters = u"".join(chapters)).encode('utf-8')
@@ -79,7 +82,9 @@ class TransStatus(object):
                     template = Template(open(CONFIG['RECORD_LATEST_TEMPLATE'], 'r').read().decode('utf-8'))
                 else:
                     template = Template(open(CONFIG['RECORD_TEMPLATE'], 'r').read().decode('utf-8'))
+                    
                 doc_diff_url = docdiff_url(doc)
+                
                 if doc_diff_url == None:
                     doc_diff_url = ""
 

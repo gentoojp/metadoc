@@ -32,8 +32,7 @@ class MetaDoc():
         if kwargs.has_key('c_id'):
             return tree.find("categories/cat[@id='" + kwargs['c_id'] + "']")
         else:
-            return tree.findall('categories/cat')
-
+            return  tree.findall('categories/cat')
             
     def get_docs(self, **kwargs):
         lang = kwargs['lang'] if kwargs.has_key('lang') else 'en'
@@ -68,6 +67,8 @@ class MetaDoc():
                 meta_info['file_ja_path'] = file_ja_path
             else:
                 meta_info['file_ja_path'] = meta_info['file_en_path']
+
+
 
             yield meta_info
     
