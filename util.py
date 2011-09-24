@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import xml.etree.ElementTree as etree
 from settings import *
 import commands
 import tempfile
@@ -59,3 +60,33 @@ def docdiff_url(doc):
 
     os.remove(old_file[1])
     os.remove(new_file[1])
+
+
+
+def guess_categories(info_list):
+    for info in info_list:
+        try:
+            tree = etree.parse(CONFIG['BASE_PATH'] + info['file_en_path'])
+            included_docs = tree.findall('.//include')
+            if included_docs.__len__() > 0:
+                for d in included_docs:
+                    d_path = d.get('href')
+                    for i in info_list:
+                        if d_path == os.path.basename(i['file_en_path']): # searching meta-info by including path
+                            i['en_memberof'].update(info['en_memberof'])
+                            i['ja_memberof'].update(info['ja_memberof'])
+        except:
+            pass
+    
+    return info_list
+
+
+def guess_categories_coverpage(hb_list):
+    for info in hb_list:
+        if info['file_id'] in CONFIG['COVERS']:
+            f_id = info['file_id']
+            info['en_memberof'].update({f_id: CONFIG[f_id][0]})
+            info['ja_memberof'].update({f_id: CONFIG[f_id][1]})
+
+    hb_list = guess_categories(hb_list)
+    return hb_list

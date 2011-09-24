@@ -60,7 +60,8 @@ class MetaDoc():
                 ja_member_cat = [(m.text, self.get_categories(lang = 'ja', c_id = m.text).text) for m in ja_doc.getiterator('memberof')]
                 meta_info['ja_memberof'] = dict(ja_member_cat)
             except:
-                meta_info['en_memberof'] = None
+                meta_info['en_memberof'] = {}
+                meta_info['ja_memberof'] = {}
 
             file_ja_path = meta_info['file_en_path'].replace('/en/', '/ja/')
             if file_ja_path == self.get_files(lang = 'ja', f_id = f.get('id')).text:

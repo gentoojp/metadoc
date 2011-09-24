@@ -17,37 +17,57 @@ class TransStatus(object):
         self.base_template = Template(open(CONFIG['BASE_TAMPLATE'], 'r').read().decode('utf-8'))
         self.chapter_template = Template(open(CONFIG['CHAPTER_TEMPLATE'], 'r').read().decode('utf-8'))
         md = MetaDoc()
-        self.categories = { category.get('id'): { 'member':[], 'title': category.text } for category in md.get_categories(lang='ja') }
+        #self.categories = { category.get('id'): { 'member':[], 'title': category.text } for category in md.get_categories(lang='ja') }
+        self.categories = {}
 
-        sd_all = [SimpleDoc(info) for info in md.get_meta_info(scope = 'simple')]
+        sd_all = [info for info in md.get_meta_info(scope = 'simple')]
+        sd_all = guess_categories(sd_all)
+        sd_all = [SimpleDoc(info) for info in sd_all]
 
         sd_list = [sd for sd in sd_all if self.list_check(sd)]
         sd_error_list = [sd for sd in sd_all if not self.list_check(sd)]
 
+        # for sd in sd_list:
+        #     try:
+        #         for category in sd.meta_info['en_memberof'].keys():
+        #             print sd.meta_info['file_id'], category, sd.meta_info['ja_memberof'].keys()
+        #             self.add_doc(category, sd)
+        #     except:
+        #         pass
         for sd in sd_list:
-            try:
-                for category in sd.meta_info['en_memberof'].keys():
-                    self.add_doc(category, sd)
-            except:
-                pass
-
-        hb_all = [Handbook(info) for info in md.get_meta_info(scope = 'handbook')]
+            self.add_doc(sd)
+        
+        hb_all = [info for info in md.get_meta_info(scope = 'handbook')]
+        hb_all = guess_categories_coverpage(hb_all)
+        hb_all = [Handbook(info) for info in hb_all]
         
         for hb in hb_all:
-            try:
-                for category in hb.meta_info['en_memberof'].keys():
-                    self.add_doc(category, hb)
-            except:
-                pass
+            self.add_doc(hb)
+            # try:
+            #     for category in hb.meta_info['en_memberof'].keys():
+            #         self.add_doc(category, hb)
+            # except:
+            #     pass
 
-    def add_doc(self, category_id, doc):
-        self.categories[category_id]['member'].append(doc)
+#    def add_doc(self, category_id, doc):
+        #self.categories[category_id]['member'].append(doc)
+
+    def add_doc(self, doc):
+        for (k, v) in doc.meta_info['ja_memberof'].items():
+            if self.categories.has_key(k):
+                self.categories[k]['member'].append(doc)
+            else:
+                self.categories.update({k: {'member': [], 'title': v}})
+                self.categories[k]['member'].append(doc)
 
     def list_check(self, sd):
         if sd.meta_info_error:
             return False
 
         if sd.meta_info['file_id'] in CONFIG['NON_LIST_FILE']:
+            return False
+
+        if not sd.meta_info['en_memberof']:
             return False
 
         return True
