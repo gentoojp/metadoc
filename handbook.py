@@ -5,12 +5,14 @@ import xml.etree.ElementTree as etree
 import os.path
 from simple_doc import SimpleDoc
 from settings import *
+
+
  
 class Handbook(SimpleDoc):
     def __init__(self, info):
         super(Handbook, self).__init__(info)
         self.childs = []
-        self.__set_docinfo()
+        #self.__set_docinfo()
 
     def __set_docinfo(self):
         # Parse inculde document
@@ -39,4 +41,32 @@ class Handbook(SimpleDoc):
             return True
         else:
             return False
+
+
+
+def build(hb_list):
+    hb_cover_list = [info for info in hb_list if info['file_id'] in CONFIG['COVERS']]
+    for cover_info in hb_cover_list:
+
+        f_id = cover_info['file_id']
+        cover_info['en_memberof'] = {f_id: CONFIG[f_id][0]}
+        cover_info['ja_memberof'] = {f_id: CONFIG[f_id][1]}
+        
+        tree = etree.parse(CONFIG['BASE_PATH'] + cover_info['file_en_path'])
+        included_docs = tree.findall('.//include')
+        for i in included_docs:
+            for info in hb_list:
+                if i.get('href') == os.path.basename(info['file_en_path']): # searching meta-info by including path
+                    info['en_memberof'] = {f_id: CONFIG[f_id][0]}
+                    info['ja_memberof'] = {f_id: CONFIG[f_id][1]}
+
+    return hb_list
+            
+            
+            
+
+        
+        
+
+    
 
