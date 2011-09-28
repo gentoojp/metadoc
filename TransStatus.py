@@ -16,48 +16,33 @@ class TransStatus(object):
     def __init__(self):
         self.base_template = Template(open(CONFIG['BASE_TAMPLATE'], 'r').read().decode('utf-8'))
         self.chapter_template = Template(open(CONFIG['CHAPTER_TEMPLATE'], 'r').read().decode('utf-8'))
-        md = MetaDoc()
-        #self.categories = { category.get('id'): { 'member':[], 'title': category.text } for category in md.get_categories(lang='ja') }
+        self.md = MetaDoc()
         self.categories = {}
 
-        sd_all = [info for info in md.get_meta_info(scope = 'simple')]
+        sd_all = [info for info in self.md.get_meta_info(scope = 'simple')]
         sd_all = guess_categories(sd_all)
         sd_all = [SimpleDoc(info) for info in sd_all]
 
         sd_list = [sd for sd in sd_all if self.list_check(sd)]
         sd_error_list = [sd for sd in sd_all if not self.list_check(sd)]
 
-        # for sd in sd_list:
-        #     try:
-        #         for category in sd.meta_info['en_memberof'].keys():
-        #             print sd.meta_info['file_id'], category, sd.meta_info['ja_memberof'].keys()
-        #             self.add_doc(category, sd)
-        #     except:
-        #         pass
         for sd in sd_list:
             self.add_doc(sd)
         
-        hb_all = [info for info in md.get_meta_info(scope = 'handbook')]
+        hb_all = [info for info in self.md.get_meta_info(scope = 'handbook')]
         hb_all = guess_categories_coverpage(hb_all)
         hb_all = [Handbook(info) for info in hb_all]
         
         for hb in hb_all:
             self.add_doc(hb)
-            # try:
-            #     for category in hb.meta_info['en_memberof'].keys():
-            #         self.add_doc(category, hb)
-            # except:
-            #     pass
-
-#    def add_doc(self, category_id, doc):
-        #self.categories[category_id]['member'].append(doc)
 
     def add_doc(self, doc):
         for (k, v) in doc.meta_info['ja_memberof'].items():
             if self.categories.has_key(k):
                 self.categories[k]['member'].append(doc)
             else:
-                self.categories.update({k: {'member': [], 'title': v}})
+                parent = self.md.get_parent_category_title(lang='ja', c_id=k)
+                self.categories.update({k: {'member': [], 'title': v, 'parent': parent}})
                 self.categories[k]['member'].append(doc)
 
     def list_check(self, sd):
@@ -80,7 +65,8 @@ class TransStatus(object):
                 records.append(record)
 
             if len(records) > 0:
-                chapters.append(self.chapter_template.substitute(chapter = category[1]['title'], records = u"".join(records)))
+                c_title = u"%s -> %s" % (category[1]['parent'], category[1]['title'])
+                chapters.append(self.chapter_template.substitute(chapter = c_title, records = u"".join(records)))
         
         d = u"%s" % date.today().strftime('%d %b %Y')
         print self.base_template.substitute(date = d, chapters = u"".join(chapters)).encode('utf-8')
@@ -88,6 +74,7 @@ class TransStatus(object):
 
     def record(self, category_id):
         docs = self.categories[category_id]['member']
+        docs.sort(cmp=lambda x,y: cmp(x.en_title, y.en_title))
         for doc in docs:
             attrs = {
                     'en_url': escape(doc_url(doc, lang='en')),
@@ -101,7 +88,7 @@ class TransStatus(object):
                 else:
                     template = Template(open(CONFIG['RECORD_TEMPLATE'], 'r').read().decode('utf-8'))
                     
-                doc_diff_url = docdiff_url(doc)
+                doc_diff_url = None#docdiff_url(doc)
                 
                 if doc_diff_url == None:
                     doc_diff_url = ""

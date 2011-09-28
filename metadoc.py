@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 from xml.etree.ElementTree import ElementTree
 from settings import *
         
@@ -33,6 +36,23 @@ class MetaDoc():
             return tree.find("categories/cat[@id='" + kwargs['c_id'] + "']")
         else:
             return  tree.findall('categories/cat')
+
+    def get_parent_category_title(self, c_id = None, **kwargs):
+        if c_id is None:
+            return None
+        lang = kwargs['lang'] if kwargs.has_key('lang') else 'en'
+        c = self.get_categories(lang=lang, c_id=c_id)
+        if c is None:
+            if c_id in CONFIG:
+                return CONFIG[c_id][2]
+            else:
+                return None
+        else:
+            parent_id = c.get('parent')
+            if parent_id is not None:
+                return self.get_categories(lang=lang, c_id=parent_id).text
+            else:
+                return u'その他'
             
     def get_docs(self, **kwargs):
         lang = kwargs['lang'] if kwargs.has_key('lang') else 'en'
