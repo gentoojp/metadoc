@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 from xml.etree.ElementTree import ElementTree
 from settings import *
         
@@ -32,8 +35,24 @@ class MetaDoc():
         if kwargs.has_key('c_id'):
             return tree.find("categories/cat[@id='" + kwargs['c_id'] + "']")
         else:
-            return tree.findall('categories/cat')
+            return  tree.findall('categories/cat')
 
+    def get_parent_category_title(self, c_id = None, **kwargs):
+        if c_id is None:
+            return None
+        lang = kwargs['lang'] if kwargs.has_key('lang') else 'en'
+        c = self.get_categories(lang=lang, c_id=c_id)
+        if c is None:
+            if c_id in CONFIG:
+                return CONFIG[c_id][2]
+            else:
+                return None
+        else:
+            parent_id = c.get('parent')
+            if parent_id is not None:
+                return self.get_categories(lang=lang, c_id=parent_id).text
+            else:
+                return u'その他'
             
     def get_docs(self, **kwargs):
         lang = kwargs['lang'] if kwargs.has_key('lang') else 'en'
@@ -61,13 +80,16 @@ class MetaDoc():
                 ja_member_cat = [(m.text, self.get_categories(lang = 'ja', c_id = m.text).text) for m in ja_doc.getiterator('memberof')]
                 meta_info['ja_memberof'] = dict(ja_member_cat)
             except:
-                meta_info['en_memberof'] = None
+                meta_info['en_memberof'] = {}
+                meta_info['ja_memberof'] = {}
 
             file_ja_path = meta_info['file_en_path'].replace('/en/', '/ja/')
             if file_ja_path == self.get_files(lang = 'ja', f_id = f.get('id')).text:
                 meta_info['file_ja_path'] = file_ja_path
             else:
                 meta_info['file_ja_path'] = meta_info['file_en_path']
+
+
 
             yield meta_info
     

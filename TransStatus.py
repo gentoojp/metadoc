@@ -17,46 +17,35 @@ class TransStatus(object):
     def __init__(self):
         self.base_template = Template(open(CONFIG['BASE_TAMPLATE'], 'r').read().decode('utf-8'))
         self.chapter_template = Template(open(CONFIG['CHAPTER_TEMPLATE'], 'r').read().decode('utf-8'))
-        md = MetaDoc()
+
+        self.md = MetaDoc()
         self.categories = {}
 
-        for category in md.get_categories(lang='ja'):
-            self.__add_category(category.get('id'), category.text, category.get('parent'))
-        self.__add_category('Handbook', 'Handbook', None)
-
         # Simple Documents
-        sd_all = [SimpleDoc(info) for info in md.get_meta_info(scope = 'simple')]
+        sd_all = [info for info in self.md.get_meta_info(scope = 'simple')]
+        sd_all = guess_categories(sd_all)
+        sd_all = [SimpleDoc(info) for info in sd_all]
         sd_list = [sd for sd in sd_all if self.list_check(sd)]
         sd_error_list = [sd for sd in sd_all if not self.list_check(sd)]
 
         for sd in sd_list:
-            self.__add_doc(sd)
-
-        # Handbooks
-        hb_all = [Handbook(info) for info in md.get_meta_info(scope = 'handbook')]
+            self.add_doc(sd)
+        
+        hb_all = [info for info in self.md.get_meta_info(scope = 'handbook')]
+        hb_all = guess_categories_coverpage(hb_all)
+        hb_all = [Handbook(info) for info in hb_all]
+        
         for hb in hb_all:
-            self.__add_doc(hb)
-    
-    def __add_category(self, category_id, title, parent):
-        self.categories[category_id] = { 'member': [], 'title': title, 'parent': parent }
+            self.add_doc(hb)
 
-    def __add_doc(self, doc):
-        if doc.meta_info['en_memberof']:
-            if doc.meta_info.has_key('parent') and doc.meta_info['parent']:
-                if not doc.meta_info['parent'] in self.categories and doc.meta_info['parent'] in CONFIG:
-                    self.__add_category(doc.meta_info['parent'], CONFIG[doc.meta_info['parent']][1], 'Handbook')
-                self.categories[doc.meta_info['parent']]['member'].append(doc)
+    def add_doc(self, doc):
+        for (k, v) in doc.meta_info['ja_memberof'].items():
+            if self.categories.has_key(k):
+                self.categories[k]['member'].append(doc)
             else:
-                for category_id in doc.meta_info['en_memberof'].keys():
-                    if not category_id in self.categories and category_id in CONFIG:
-                        # for Handbook
-                        self.__add_category(category_id, CONFIG[category_id][1], 'Handbook')
-                    self.categories[category_id]['member'].append(doc)
-
-        if type(doc) is Handbook and doc.has_child():
-             for child_doc in doc.childs:
-                 self.__add_doc(child_doc)
-
+                parent = self.md.get_parent_category_title(lang='ja', c_id=k)
+                self.categories.update({k: {'member': [], 'title': v, 'parent': parent}})
+                self.categories[k]['member'].append(doc)
 
     def list_check(self, sd):
         if sd.meta_info_error:
@@ -65,16 +54,20 @@ class TransStatus(object):
         if sd.meta_info['file_id'] in CONFIG['NON_LIST_FILE']:
             return False
 
+        if not sd.meta_info['en_memberof']:
+            return False
+
         return True
 
     def dump(self):
         chapters = []
         for category in sorted(self.categories.items()):
-            if category[1]['parent']:
-                records = []
-                for record in self.record(category[0]):
-                     records.append(record)
-                c_title = u"%s -> %s" % (self.categories[category[1]['parent']]['title'], category[1]['title'])
+            records = []
+            for record in self.record(category[0]):
+                records.append(record)
+
+            if len(records) > 0:
+                c_title = u"%s -> %s" % (category[1]['parent'], category[1]['title'])
                 chapters.append(self.chapter_template.substitute(chapter = c_title, records = u"".join(records)))
         
         d = u"%s" % date.today().strftime('%d %b %Y')
@@ -83,6 +76,7 @@ class TransStatus(object):
 
     def record(self, category_id):
         docs = self.categories[category_id]['member']
+        docs.sort(cmp=lambda x,y: cmp(x.en_title, y.en_title))
         for doc in docs:
             attrs = {
                     'en_url': escape(doc_url(doc, lang='en')),
@@ -95,7 +89,9 @@ class TransStatus(object):
                     template = Template(open(CONFIG['RECORD_LATEST_TEMPLATE'], 'r').read().decode('utf-8'))
                 else:
                     template = Template(open(CONFIG['RECORD_TEMPLATE'], 'r').read().decode('utf-8'))
-                doc_diff_url = None#docdiff_url(doc)
+                    
+                doc_diff_url = docdiff_url(doc)
+                
                 if doc_diff_url == None:
                     doc_diff_url = ""
 
