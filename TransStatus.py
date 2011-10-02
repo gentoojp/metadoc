@@ -85,7 +85,7 @@ class TransStatus(object):
                     'en_title': doc.en_title,
                     }
             if doc.is_translated:
-                if doc.en_cvs_rev == doc.ja_cvs_rev:
+                if doc.en_cvs_rev == doc.ja_org_rev:
                     template = Template(open(CONFIG['RECORD_LATEST_TEMPLATE'], 'r').read().decode('utf-8'))
                 else:
                     template = Template(open(CONFIG['RECORD_TEMPLATE'], 'r').read().decode('utf-8'))
