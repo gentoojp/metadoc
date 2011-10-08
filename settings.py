@@ -14,8 +14,8 @@ CONFIG['NON_LIST_FILE'] = ('metadoc','metadoc-index', 'metadoc-list', 'metadoc-o
 
 CONFIG['GENTOO_URL_BASE'] = 'http://www.gentoo.org'
 CONFIG['CVS_URL_BASE'] = 'http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs'
-CONFIG['DIFF_DIF'] = u'/var/www/projects.gentoo.gr.jp/htdocs/docs/diff'
-CONFIG['DIFF_DIR'] = u'/tmp/'
+CONFIG['DIFF_DIR'] = u'/var/www/projects.gentoo.gr.jp/htdocs/docs/diff'
+CONFIG['DIFF_URL'] = u'http://projects.gentoo.gr.jp/docs/diff/'
 
 CONFIG['BASE_TAMPLATE'] = "./template/trans_status_base.xml"
 CONFIG['CHAPTER_TEMPLATE'] = "./template/trans_status_chapter.xml"

@@ -56,10 +56,10 @@ def docdiff_url(doc):
         logging.warning(doc.__str__())
         logging.warning(doc.meta_info['file_id'])
 
-    return diff_html_path
-
     os.remove(old_file[1])
     os.remove(new_file[1])
+
+    return os.path.basename(diff_html_path)
 
 
 

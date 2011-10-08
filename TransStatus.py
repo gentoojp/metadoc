@@ -94,6 +94,9 @@ class TransStatus(object):
                 
                 if doc_diff_url == None:
                     doc_diff_url = ""
+                else:
+                    doc_diff_url = CONFIG['DIFF_URL'] + doc_diff_url
+
 
                 try:
                     translator = doc.translator
