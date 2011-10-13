@@ -68,6 +68,7 @@ def guess_categories(info_list):
         try:
             tree = etree.parse(CONFIG['BASE_PATH'] + info['file_en_path'])
             included_docs = tree.findall('.//include')
+            order = 0
             if included_docs.__len__() > 0:
                 for d in included_docs:
                     d_path = d.get('href')
@@ -75,6 +76,8 @@ def guess_categories(info_list):
                         if d_path == os.path.basename(i['file_en_path']): # searching meta-info by including path
                             i['en_memberof'].update(info['en_memberof'])
                             i['ja_memberof'].update(info['ja_memberof'])
+                            i['order'] = order
+                            order = order +1 
         except:
             pass
     
@@ -89,4 +92,9 @@ def guess_categories_coverpage(hb_list):
             info['ja_memberof'].update({f_id: CONFIG[f_id][1]})
 
     hb_list = guess_categories(hb_list)
+    # sort by index
+    for info in hb_list:
+        if not 'order' in info:
+            info['order'] = -1
+    hb_list.sort(cmp=lambda x,y: cmp(x['order'], y['order']))
     return hb_list

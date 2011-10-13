@@ -76,7 +76,6 @@ class TransStatus(object):
 
     def record(self, category_id):
         docs = self.categories[category_id]['member']
-        docs.sort(cmp=lambda x,y: cmp(x.en_title, y.en_title))
         for doc in docs:
             attrs = {
                     'en_url': escape(doc_url(doc, lang='en')),
