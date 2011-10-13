@@ -105,7 +105,7 @@ class TransStatus(object):
                 attrs.update({
                     'ja_url': escape(doc_url(doc, lang='ja')),
                     'ja_cvs': escape(doc_url(doc, lang='ja', cvs=True)),
-                    'ja_cvs_rev': doc.ja_cvs_rev,
+                    'ja_cvs_rev': doc.ja_org_rev,
                     'diff_url': escape(doc_url(doc, diff=True)),
                     'doc_diff_url': escape(doc_diff_url),
                     'translator': escape(translator)
