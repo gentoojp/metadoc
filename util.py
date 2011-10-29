@@ -31,7 +31,7 @@ def doc_url(doc, lang = 'en', cvs=False,  diff = False):
 
 
 def docdiff_url(doc):
-    file_path = doc.meta_info['file_ja_path']
+    file_path = doc.meta_info['file_en_path']
     
     cvs_url = "http://sources.gentoo.org/cgi-bin/viewcvs.cgi/*checkout*/xml/htdocs" + file_path + "?rev=%s&hideattic=0&root=gentoo&content-type=text/plain" 
 
@@ -39,7 +39,7 @@ def docdiff_url(doc):
     new_file = tempfile.mkstemp()
 
     urllib.urlretrieve(cvs_url % (doc.ja_org_rev,) , old_file[1])
-    urllib.urlretrieve(cvs_url % (doc.en_cvs_rev,) , old_file[1])
+    urllib.urlretrieve(cvs_url % (doc.en_cvs_rev,) , new_file[1])
 
     docdiff_command = '/usr/bin/docdiff --utf8 --html %s %s' % (old_file[1], new_file[1])
     diff_html = commands.getoutput(docdiff_command)
