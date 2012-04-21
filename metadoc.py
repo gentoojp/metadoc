@@ -84,7 +84,10 @@ class MetaDoc():
                 meta_info['ja_memberof'] = {}
 
             file_ja_path = meta_info['file_en_path'].replace('/en/', '/ja/')
-            if file_ja_path == self.get_files(lang = 'ja', f_id = f.get('id')).text:
+            got_files = self.get_files(lang = 'ja', f_id = f.get('id'))
+            if got_files == None:
+                continue
+            if file_ja_path == got_files.text:
                 meta_info['file_ja_path'] = file_ja_path
             else:
                 meta_info['file_ja_path'] = meta_info['file_en_path']
